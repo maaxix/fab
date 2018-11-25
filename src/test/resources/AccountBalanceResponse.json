@@ -1,0 +1,16 @@
+{
+    "status": {
+        "code": "OK",
+        "description": "Account balance fetch mock response"
+    },
+    "error": {
+        "description": ""
+    },
+    "payload": [
+        {
+            "date": "11/08/2017",
+            "balance": "470.65",
+            "availableBalance": "450"
+        }
+    ]
+}
