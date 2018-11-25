@@ -26,7 +26,7 @@ public class SCTOrderController {
 	private SCTOrderService service;
 
 	@ResponseBody
-	@GetMapping(path = "/postSCT/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/postSCT/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	SCTOrderDetails one(@PathVariable Long id) throws Exception {
 		SCTOrder order;
 		
