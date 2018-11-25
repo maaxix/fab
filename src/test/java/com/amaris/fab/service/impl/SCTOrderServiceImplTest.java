@@ -53,7 +53,7 @@ public class SCTOrderServiceImplTest
 	public void getAccountBalance() throws Exception
 	{
 		SCTOrderResponse mockResponse = JMapper.jsonFile2Object("SCTOrderResponse.json", SCTOrderResponse.class);
-		
+		// mock the service
 		when(restTemplate.exchange(
                 Matchers.anyString(), 
                 Matchers.any(HttpMethod.class),
