@@ -1,14 +1,183 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Fabrick Webserice REST - TEST API</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+
+</head>
+
 <body>
-<h1>Test Fabrick REST API</h1>
 
-<br>
-<a href="http://localhost:8080/api/accountBalance/14930637">Get Account Balance</a>
-<p>URL : http://localhost:8080/api/accountBalance/14930637</p>
+    <div id="wrapper" class="toggled">
 
-<a href="http://localhost:8080/api/postSCT/14930637">Create SCT Order</a>
-<p>URL : http://localhost:8080/api/postSCT/14930637</p>		
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="">Fabrick API</a>
+                </li>
+                <li>
+                    <a href="#balance">Get Account Balance</a>
+                </li>
+                <li>
+                    <a href="#sctorder">Create SCT Order</a>
+                </li>
+                <li>
+                    <a href="/">More...</a>
+                </li>
+                
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid" id="top">
+				<a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
+            </div>
+			
+			<div class="container-fluid" id="balance">
+			  <h4>Get Account Balance</h4>
+			  <div class="panel panel-default">
+				<div class="panel-body">
+					<form action="/api/accountBalance/{accnum1}" data-out="accountBalanceResult">
+					  <div class="form-group">
+						<label for="accnum1">Account Number:</label>
+						<input type="text" class="form-control" name="id" id="accnum1">
+					  </div>
+					  <button type="submit" class="btn btn-default">Submit</button>
+					</form>				
+				</div>
+				<div class="panel-footer">
+					<p>Results:</p>
+					<pre id="accountBalanceResult"></pre>
+				</div>
+			  </div>
+			</div>
+			
+			<div class="container-fluid" id="sctorder">
+			  <h4>Create SCT Order</h4>
+			  <div class="panel panel-default">
+				<div class="panel-body">
+					<form method="post" action="/api/postSCT/{accnum2}" data-out="orderResult">
+						<div class="form-group">
+							<label for="accnum2">Account Number:</label>
+							<input type="text" class="form-control" name="id" id="accnum2">
+						</div>
+					  <div class="form-group">
+						<label for="receiverIban">Receiver Iban:</label>
+						<input type="text" class="form-control" name="receiverIban" id="receiverIban">
+					  </div>
+					  <div class="form-group">
+						<label for="amount">Amount:</label>
+						<input type="text" class="form-control" name="amount" id="amount">
+					  </div>						
+						<button type="submit" class="btn btn-default">Submit</button>
+					</form>				
+				</div>
+				<div class="panel-footer">
+					<p>Results:</p>
+					<pre id="orderResult"></pre>
+				</div>
+			  </div>
+			</div>			
+        </div>
+
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
 	
+	$(document).on('submit','form',function(e){
+		e.preventDefault();
+		send(this);
+		return false;
+	});
+	function send(frm)
+	{
+		var url = frm.action;
+		var method = frm.method;
+		url = urlTemplate(url);
+		var div = $(frm).attr('data-out');
+		method = method.toUpperCase();
+		$.ajax({
+			url: url,
+			method,
+			success: function(response, status, xhr) {
+				var ct = xhr.getResponseHeader("content-type") || "";
+				var result ;
+				if (ct.indexOf('html') > -1) {
+				  result= response;
+				}
+				else if (ct.indexOf('json') > -1) {
+				  result = JSON.stringify(response,null,2);
+				} 				
+				if(div)
+					$("#"+div).html(result);
+				else
+					alert(result);				
+			},
+			error: function(xhr, status, error)
+			{
+				var ct = xhr.getResponseHeader("content-type") || "";
+				var result ;
+				if (ct.indexOf('html') > -1) {
+				  result= xhr.responseText;
+				}
+				else if (ct.indexOf('json') > -1) {
+				  result = JSON.stringify(xhr.responseText,null,2);
+				} 				
+				if(div)
+					$("#"+div).html(result);
+				else
+					alert(result);
+			}
+		});
+	}
+	function urlTemplate(url)
+	{
+		var elm, v;
+		var u  = url;
+		u = u.replace('%7B', "{").replace("%7D", "}");
+		var re = /{(.*?)}/g;
+		var arr = u.match(re);
+		if(arr.length > 0)
+		{
+			for(var x=0;x<arr.length;x++)
+			{
+				elm = document.getElementById(arr[x].substring(1, arr[x].length-1));
+				if(elm) v = $(elm).val(); else v = "";
+				u = u.replace(arr[x], v);
+			}
+		}	
+		return u;
+	}
+    </script>
+
+
 </body>
+
 </html>
