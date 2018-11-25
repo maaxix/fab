@@ -123,9 +123,12 @@
 		url = urlTemplate(url);
 		var div = $(frm).attr('data-out');
 		method = method.toUpperCase();
+		var data = $( frm ).serialize();
+		
 		$.ajax({
 			url: url,
-			method,
+			type:method,
+			data:data,
 			success: function(response, status, xhr) {
 				var ct = xhr.getResponseHeader("content-type") || "";
 				var result ;
